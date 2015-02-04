@@ -1,2 +1,2 @@
-# schogoRepo
-PMTest
+# OpenFrameworks
+ProjectionMappingTest with "ofxQuadWarp" addons
