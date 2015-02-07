@@ -20,8 +20,8 @@ void ofApp::setup(){
     mov.loadMovie("TestMov1.mov");
     mov.play();
     
-    int x = 0;
-    int y = 0;
+    int x = 40;
+    int y = 40;
     int w[NUM];
     int h[NUM];
     int wMov;
@@ -40,12 +40,14 @@ void ofApp::setup(){
         warper[i].setBottomRightCornerPosition(ofPoint(x + w[i], y + h[i]));
         
         warper[i].setup();
-        warper[i].load();
+//        warper[i].load();
         
         fbo[i].begin();
         ofClear(255, 255, 255,0);
         fbo[i].end();
 
+        x += 100;
+        y += 100;
     }
     
 //for Movie File
@@ -61,7 +63,7 @@ void ofApp::setup(){
     movWarper.setBottomRightCornerPosition(ofPoint(x + wMov, y + hMov));
 
     movWarper.setup();
-    movWarper.load();
+//    movWarper.load();
     
     fboMov.begin();
     ofClear(255, 255, 255,0);
@@ -115,7 +117,6 @@ void ofApp::draw(){
         
         ofSetColor(ofColor::white);
 
-
     }
     
 // for Movie File
@@ -142,8 +143,6 @@ void ofApp::draw(){
     ofSetColor(ofColor::red);
     movWarper.drawSelectedCorner();
     
-//    movWarper.draw();
-
 }
 
 //--------------------------------------------------------------
