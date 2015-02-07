@@ -27,12 +27,15 @@ class ofApp : public ofBaseApp{
     static const int NUM = 3;
     
     ofxQuadWarp warper[NUM];
-    
     ofImage img[NUM];
     ofFbo fbo[NUM];
     
+    ofxQuadWarp movWarper;
+    ofVideoPlayer mov;
+    ofFbo fboMov;
+
+
     ofPoint points[10];
     
     bool bOn;
-		
 };

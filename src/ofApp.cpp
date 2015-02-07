@@ -17,11 +17,15 @@ void ofApp::setup(){
     img[0].loadImage("TestImg1.png");
     img[1].loadImage("TestImg2.png");
     img[2].loadImage("TestImg3.png");
+    mov.loadMovie("TestMov1.mov");
+    mov.play();
     
     int x = 0;
     int y = 0;
     int w[NUM];
     int h[NUM];
+    int wMov;
+    int hMov;
     
     for (int i=0; i<NUM; i++) {
         w[i] = img[i].width;
@@ -43,6 +47,26 @@ void ofApp::setup(){
         fbo[i].end();
 
     }
+    
+//for Movie File
+    wMov = mov.width/2;
+    hMov = mov.height/2;
+    
+    fboMov.allocate(wMov, hMov);
+
+    movWarper.setSourceRect(ofRectangle(0, 0, wMov, hMov));
+    movWarper.setTopLeftCornerPosition(ofPoint(x, y));
+    movWarper.setTopRightCornerPosition(ofPoint(x + wMov, y));
+    movWarper.setBottomLeftCornerPosition(ofPoint(x, y + hMov));
+    movWarper.setBottomRightCornerPosition(ofPoint(x + wMov, y + hMov));
+
+    movWarper.setup();
+    movWarper.load();
+    
+    fboMov.begin();
+    ofClear(255, 255, 255,0);
+    fboMov.end();
+
    
 }
 
@@ -51,6 +75,8 @@ void ofApp::update(){
     if (ofGetFrameNum()% 5 !=0) {
         return;
     }
+    
+    mov.update();
 
 }
 
@@ -86,16 +112,46 @@ void ofApp::draw(){
     
         ofSetColor(ofColor::red);
         warper[i].drawSelectedCorner();
+        
+        ofSetColor(ofColor::white);
+
 
     }
+    
+// for Movie File
+    fboMov.begin();
+    mov.draw(0, 0);
+    fboMov.end();
+    
+    ofMatrix4x4 mat = movWarper.getMatrix();
+    
+    ofPushMatrix();
+    ofMultMatrix(mat);
+    fboMov.draw(0, 0);
+    ofPopMatrix();
+    
+    ofSetColor(ofColor::magenta);
+    movWarper.drawQuadOutline();
+    
+    ofSetColor(ofColor::yellow);
+    movWarper.drawCorners();
+    
+    ofSetColor(ofColor::magenta);
+    movWarper.drawHighlightedCorner();
+    
+    ofSetColor(ofColor::red);
+    movWarper.drawSelectedCorner();
+    
+//    movWarper.draw();
+
 }
 
 //--------------------------------------------------------------
-
 void ofApp::exit(){
     for (int i=0; i<NUM; i++) {
         warper[i].save();
     }
+    movWarper.save();
 }
 //--------------------------------------------------------------
 void ofApp::toggle(){
@@ -163,6 +219,27 @@ void ofApp::keyPressed(int key){
             return;
         }
         warper[2].save();
+    }
+
+    //foMovie
+    // movWarper
+    if (key == 'i' || key == 'I') {
+        toggle();
+        movWarper.toggleShow();
+    }
+    
+    if (key == 'o' || key == 'O') {
+        if (!bOn) {
+            return;
+        }
+        movWarper.load();
+    }
+    
+    if (key == 'p' || key == 'P') {
+        if (!bOn) {
+            return;
+        }
+        movWarper.save();
     }
 
 
