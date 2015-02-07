@@ -33,7 +33,10 @@ class ofApp : public ofBaseApp{
     ofxQuadWarp movWarper;
     ofVideoPlayer mov;
     ofFbo fboMov;
-
+    
+    ofxQuadWarp camWarper;
+    ofVideoGrabber camGrab;
+    ofFbo fboCam;
 
     ofPoint points[10];
     

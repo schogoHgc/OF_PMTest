@@ -1,6 +1,6 @@
 //
 //Test of "ofxQuadWarp" addons
-//Written by schogoHgc on 02/05/2015
+//Written by schogoHgc on 02/06/2015
 
 
 #include "ofApp.h"
@@ -63,12 +63,32 @@ void ofApp::setup(){
     movWarper.setBottomRightCornerPosition(ofPoint(x + wMov, y + hMov));
 
     movWarper.setup();
-//    movWarper.load();
     
     fboMov.begin();
     ofClear(255, 255, 255,0);
     fboMov.end();
 
+//for PC Camera
+    int wCam = 300;
+    int hCam = 300;
+    
+    camGrab.setVerbose(true);
+    camGrab.initGrabber(wCam, hCam);
+    
+    fboCam.allocate(wMov, hMov);
+    
+    camWarper.setSourceRect(ofRectangle(0, 0, wCam, hCam));
+    camWarper.setTopLeftCornerPosition(ofPoint(x+100, y));
+    camWarper.setTopRightCornerPosition(ofPoint(x+100 + wCam, y));
+    camWarper.setBottomLeftCornerPosition(ofPoint(x+100, y + hCam));
+    camWarper.setBottomRightCornerPosition(ofPoint(x+100 + wCam, y + hCam));
+    
+    camWarper.setup();
+    
+    fboCam.begin();
+    ofClear(255, 255, 255,0);
+    fboCam.end();
+    
    
 }
 
@@ -79,6 +99,7 @@ void ofApp::update(){
     }
     
     mov.update();
+    camGrab.update();
 
 }
 
@@ -143,6 +164,34 @@ void ofApp::draw(){
     ofSetColor(ofColor::red);
     movWarper.drawSelectedCorner();
     
+    ofSetColor(ofColor::white);
+
+    
+// for PC Camera
+    fboCam.begin();
+    camGrab.draw(0, 0);
+    fboCam.end();
+    
+    ofMatrix4x4 matC = camWarper.getMatrix();
+    
+    ofPushMatrix();
+    ofMultMatrix(matC);
+    fboCam.draw(0, 0);
+    ofPopMatrix();
+    
+    ofSetColor(ofColor::magenta);
+    camWarper.drawQuadOutline();
+    
+    ofSetColor(ofColor::yellow);
+    camWarper.drawCorners();
+    
+    ofSetColor(ofColor::magenta);
+    camWarper.drawHighlightedCorner();
+    
+    ofSetColor(ofColor::red);
+    camWarper.drawSelectedCorner();
+
+    
 }
 
 //--------------------------------------------------------------
@@ -151,6 +200,7 @@ void ofApp::exit(){
         warper[i].save();
     }
     movWarper.save();
+    camWarper.save();
 }
 //--------------------------------------------------------------
 void ofApp::toggle(){
@@ -220,7 +270,7 @@ void ofApp::keyPressed(int key){
         warper[2].save();
     }
 
-    //foMovie
+    //for Movie
     // movWarper
     if (key == 'i' || key == 'I') {
         toggle();
@@ -241,6 +291,27 @@ void ofApp::keyPressed(int key){
         movWarper.save();
     }
 
+
+    //for PC Camera
+    // camWarper
+    if (key == 'j' || key == 'J') {
+        toggle();
+        camWarper.toggleShow();
+    }
+    
+    if (key == 'k' || key == 'K') {
+        if (!bOn) {
+            return;
+        }
+        camWarper.load();
+    }
+    
+    if (key == 'l' || key == 'L') {
+        if (!bOn) {
+            return;
+        }
+        camWarper.save();
+    }
 
 }
 
